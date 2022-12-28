@@ -1,0 +1,3 @@
+﻿CREATE LOGIN [DIMAPC\Админ]
+    FROM WINDOWS WITH DEFAULT_LANGUAGE = [us_english];
+
