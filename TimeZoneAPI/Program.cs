@@ -21,8 +21,19 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/timezone", async (CountryTimeApiContext dataContext) => await dataContext.CountryCapitals.ToListAsync());
+app.MapGet("/timeZones", async (CountryTimeApiContext dataContext) =>
+{
+    return await QueryableMethods.GetCountriesTimeInfo(dataContext);
+});
 
+app.MapGet("/timezone/{codeCountry}", async (CountryTimeApiContext dataContext, string codeCountry) =>
+{
+    return await QueryableMethods.GetCountryTimeInfo(dataContext, codeCountry);
+});
+app.MapGet("/currentCountryTime/{codeCountry}", async (CountryTimeApiContext datacontext, string codeCountry) =>
+{
+    return await QueryableMethods.GetCurrentCountryTimeZoneInfo(datacontext, codeCountry);
+});
 
 app.Run();
 
