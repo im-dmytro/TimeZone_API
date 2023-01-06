@@ -21,16 +21,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/timeZones", async (CountryTimeApiContext dataContext) =>
+app.MapGet("/timezones", async (CountryTimeApiContext dataContext) =>
 {
     return await QueryableMethods.GetCountriesTimeInfo(dataContext);
 });
 
-app.MapGet("/timezone/{codeCountry}", async (CountryTimeApiContext dataContext, string codeCountry) =>
+app.MapGet("/timezones/{codeCountry}", async (CountryTimeApiContext dataContext, string codeCountry) =>
 {
     return await QueryableMethods.GetCountryTimeInfo(dataContext, codeCountry);
 });
-app.MapGet("/currentCountryTime/{codeCountry}", async (CountryTimeApiContext datacontext, string codeCountry) =>
+app.MapGet("timezones/currentCountryTime/{codeCountry}", async (CountryTimeApiContext datacontext, string codeCountry) =>
 {
     return await QueryableMethods.GetCurrentCountryTimeZoneInfo(datacontext, codeCountry);
 });
