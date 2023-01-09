@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Web;
 using TimeZoneAPI;
 using TimeZoneAPI.Models;
 
@@ -34,6 +36,20 @@ app.MapGet("timezones/currentCountryTime/{codeCountry}", async (CountryTimeApiCo
 {
     return await QueryableMethods.GetCurrentCountryTimeZoneInfo(datacontext, codeCountry);
 });
+app.MapPut("/timezones/{timezone}", async (string timezone,CountryTimeZone inputTimeZone, CountryTimeApiContext dataContext) =>
+{
+    return await QueryableMethods.UpdateTimeZoneName(dataContext, timezone, inputTimeZone);
+});
 
+app.MapPost("/timezones", async ([FromBody] CountryTimeZone inputTimeZone, CountryTimeApiContext dataContext) =>
+{
+    return await QueryableMethods.PostTimeZone(dataContext, inputTimeZone);
+});
+
+app.MapDelete("/timezones/{timezone}", async (string timezone, [FromBody] CountryTimeZone inputTimeZone, CountryTimeApiContext dataContext) =>
+{
+    return await QueryableMethods.DeleteTimeZone(dataContext, timezone, inputTimeZone);
+
+});
 app.Run();
 

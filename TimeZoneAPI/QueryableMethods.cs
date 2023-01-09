@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Web;
+using System;
 using TimeZoneAPI.Models;
 
 namespace TimeZoneAPI
@@ -51,6 +53,40 @@ namespace TimeZoneAPI
             return GetQueryableCountryTimeZones(dbContext).FirstOrDefault(el => el.CountryCode == input);
 
         }
+        public static async Task<IResult> UpdateTimeZoneName(CountryTimeApiContext dbContext, string timezone, CountryTimeZone inputTimeZone)
+        {
+            var timeZoneCountry = await dbContext.CountryTimeZones.FirstOrDefaultAsync(el => el.TimeZoneName == HttpUtility.UrlDecode(timezone));
 
+            if (timeZoneCountry is null) return Results.NotFound();
+            timeZoneCountry.TimeZoneName = inputTimeZone.TimeZoneName;
+            await dbContext.SaveChangesAsync();
+            return Results.NoContent();
+        }
+        public static async Task<IResult> PostTimeZone(CountryTimeApiContext dbContext, CountryTimeZone inputTimeZone)
+        {
+            var timeZoneCountry = await dbContext.CountryTimeZones.FirstOrDefaultAsync(el => el.TimeZoneName == inputTimeZone.TimeZoneName);
+            if (timeZoneCountry == null)
+            {
+                dbContext.CountryTimeZones.Add(inputTimeZone);
+                await dbContext.SaveChangesAsync();
+                return Results.Created($"/timezones/{inputTimeZone.TimeZoneName}", inputTimeZone);
+            }
+
+            return Results.BadRequest();
+
+        }
+        public static async Task<IResult> DeleteTimeZone(CountryTimeApiContext dbContext, string timezone, CountryTimeZone inputTimeZone)
+        {
+
+
+            if (await dbContext.CountryTimeZones.FirstOrDefaultAsync(el => el.TimeZoneName == HttpUtility.UrlDecode(timezone)) is CountryTimeZone timeZoneCountry)
+            {
+                dbContext.CountryTimeZones.Remove(timeZoneCountry);
+                await dbContext.SaveChangesAsync();
+                return Results.Ok(timeZoneCountry);
+            }
+
+            return Results.NotFound();
+        }
     }
 }
